@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Accounting Simulation - ACC2200</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        input, select {
+            padding: 10px;
+            margin: 5px;
+            width: 250px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .form-row {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        label {
+            display: inline-block;
+            width: 180px;
+            font-weight: 600;
+        }
+
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: #17a2b8;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+            cursor: help;
+            position: relative;
+        }
+
+        .info-tooltip {
+            display: none;
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            width: 300px;
+            left: 30px;
+            top: -10px;
+            z-index: 100;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.4;
+        }
+
+        .info-icon:hover .info-tooltip {
+            display: block;
+        }
+
+        .market-info {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .market-segment {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .market-event {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+
+        .event-details {
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .result-item {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .kpi-card {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+        .neutral { color: #6c757d; }
+
+        .decision-help {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .decision-help h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .decision-help ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="card" id="welcomeScreen">
+            <h1>Management Accounting Simulation</h1>
+            <p style="font-size: 18px; margin-bottom: 20px;">Practice management accounting concepts through interactive decision-making</p>
+            
+            <div class="decision-help">
+                <h4>Learning Objectives</h4>
+                <ul>
+                    <li>Understand the relationship between costs, volume, and profit</li>
+                    <li>Experience how pricing decisions affect customer demand</li>
+                    <li>Learn to balance quality, costs, and customer satisfaction</li>
+                    <li>See the impact of fixed vs. variable cost decisions</li>
+                    <li>Practice strategic decision-making under market uncertainty</li>
+                </ul>
+            </div>
+            
+            <div class="form-row">
+                <label>Your Name:</label>
+                <input type="text" id="playerName" placeholder="Enter your name">
+            </div>
+            
+            <div class="form-row">
+                <label>Tutorial Time:</label>
+                <select id="tutorialTime">
+                    <option value="">Select tutorial time</option>
+                    <option value="Monday 9am">Monday 9am</option>
+                    <option value="Monday 11am">Monday 11am</option>
+                    <option value="Tuesday 10am">Tuesday 10am</option>
+                    <option value="Wednesday 9am">Wednesday 9am</option>
+                    <option value="Thursday 11am">Thursday 11am</option>
+                    <option value="Friday 10am">Friday 10am</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="startGame()">Start Simulation</button>
+        </div>
+
+        <!-- Game Area -->
+        <div id="gameArea" class="hidden">
+            <div class="card">
+                <h2 id="monthTitle">Month 1</h2>
+                
+                <button class="btn btn-info" onclick="toggleDecisionHelp()" style="float: right;">Show Decision Guide</button>
+                
+                <div id="decisionHelpSection" class="decision-help hidden">
+                    <h4>Decision Guide</h4>
+                    <ul>
+                        <li><strong>Production Units:</strong> Higher production = lower unit costs (economies of scale), but risk of unsold inventory</li>
+                        <li><strong>Production Method:</strong> Must match your target market - premium customers won't buy economy products</li>
+                        <li><strong>Selling Price:</strong> Higher prices = higher margins but lower demand. Match price to production quality</li>
+                        <li><strong>Staff Wages:</strong> Higher wages = better quality and efficiency. Low wages may cause quality issues</li>
+                        <li><strong>Additional Staff:</strong> More staff = higher capacity but also higher fixed costs</li>
+                        <li><strong>Maintenance:</strong> Better maintenance = fewer breakdowns and quality bonuses</li>
+                        <li><strong>Marketing:</strong> Increases customer awareness and demand, but with diminishing returns</li>
+                    </ul>
+                </div>
+                
+                <div class="market-info">
+                    <h4>Market Intelligence</h4>
+                    <div class="market-grid">
+                        <div class="market-segment">
+                            <strong>Premium Customers</strong><br>
+                            <span id="premiumInfo">Moderate demand</span><br>
+                            <small>Expect high quality, pay $180-220</small>
+                        </div>
+                        <div class="market-segment">
+                            <strong>Standard Customers</strong><br>
+                            <span id="standardInfo">Steady demand</span><br>
+                            <small>Want good value, prefer $160-180</small>
+                        </div>
+                        <div class="market-segment">
+                            <strong>Economy Customers</strong><br>
+                            <span id="economyInfo">Growing segment</span><br>
+                            <small>Price-sensitive, look for $140-160</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="marketEvent" class="market-event hidden">
+                    <strong>📰 Market News:</strong> <span id="eventTitle"></span>
+                    <div class="event-details" id="eventDetails"></div>
+                </div>
+
+                <h3>Monthly Decisions</h3>
+                
+                <div class="form-row">
+                    <label>Units to Produce:</label>
+                    <input type="number" id="units" value="600" min="0" max="1200">
+                    <span class="info-icon">?
+                        <span class="info-tooltip">Production volume affects unit costs through economies of scale. Higher volumes reduce per-unit costs but risk overproduction.</span>
+                    </span>
+                </div>
+                
+                <div class="form-row">
+                    <label>Production Method:</label>
+                    <select id="productionMethod">
+                        <option value="standard">Standard ($80/unit - good quality)</option>
+                        <option value="premium">Premium ($100/unit - superior quality)</option>
+                        <option value="economy">Economy ($60/unit - basic quality)</option>
+                    </select>
+                    <span class="info-icon">?
+                        <span class="info-tooltip">Match production quality to your target market. Premium products attract quality-conscious customers but have higher costs.</span>
+                    </span>
+                </div>
+                
+                <div class="form-row">
+                    <label>Selling Price:</label>
+                    <input type="number" id="price" value="170" min="100" max="300">
+                    <span class="info-icon">?
+                        <span class="info-tooltip">Price must align with production quality and target market expectations. Mismatched price-quality hurts satisfaction.</span>
+                    </span>
+                </div>
+                
+                <div class="form-row">
+                    <label>Staff Wage Adjustment:</label>
+                    <select id="wageAdjustment">
+                        <option value="-10">Reduce wages 10% (may impact quality & morale)</option>
+                        <option value="-5">Reduce wages 5% (slight quality risk)</option>
+                        <option value="0" selected>Maintain current wages</option>
+                        <option value="5">Increase wages 5% (improves quality & efficiency)</option>
+                        <option value="10">Increase wages 10% (significant quality boost)</option>
+                    </select>
+                    <span class="info-icon">?
+                        <span class="info-tooltip">Wage levels directly impact product quality and worker efficiency. Low wages may cause defects and lower productivity.</span>
+                    </span>
+                </div>
+                
+                <div class="form-row">
+                    <label>Additional Staff:</label>
+                    <select id="staffing">
+                        <option value="0">No change (Current: $25k/month base)</option>
+                        <option value="1">Hire 3 workers (+$12k/month)</option>
+                        <option value="2">Hire 6 workers (+$24k/month)</option>
+                    </select>
+                    <span class="info-icon">?
+                        <span class="info-tooltip">More staff increases production capacity but adds to fixed costs. Consider if demand justifies the expense.</span>
+                    </span>
+                </div>
+                
+                <div class="form-row">
+                    <label>Maintenance Level:</label>
+                    <select id="maintenance">
+                        <option value="basic">Basic ($4k/month - 10% breakdown risk)</option>
+                        <option value="standard" selected>Standard ($8k/month - 3% breakdown risk)</option>
+                        <option value="premium">Premium ($15k/month - no breakdowns, quality bonus)</option>
+                    </select>
+                    <span class="info-icon">?
+                        <span class="info-tooltip">Maintenance affects production reliability and product quality. Breakdowns reduce output and customer satisfaction.</span>
+                    </span>
+                </div>
+                
+                <div class="form-row">
+                    <label>Marketing Spend:</label>
+                    <input type="number" id="marketing" value="10000" min="0" max="60000">
+                    <span class="info-icon">?
+                        <span class="info-tooltip">Marketing increases demand but with diminishing returns. Every $400 spent adds approximately 1 customer.</span>
+                    </span>
+                </div>
+                
+                <button class="btn" onclick="submitDecision()">Submit Monthly Decisions</button>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="card hidden">
+                <h3>Monthly Results</h3>
+                
+                <div class="results-grid">
+                    <div class="result-item">
+                        <label>Revenue:</label>
+                        <div style="font-size: 24px; font-weight: bold;">
+                            $<span id="revenue">0</span>
+                            <span id="revenueChange" style="font-size: 14px; margin-left: 10px;"></span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <label>Total Costs:</label>
+                        <div style="font-size: 24px; font-weight: bold;">
+                            $<span id="costs">0</span>
+                            <span id="costsChange" style="font-size: 14px; margin-left: 10px;"></span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <label>Profit:</label>
+                        <div style="font-size: 24px; font-weight: bold;">
+                            $<span id="profit">0</span>
+                            <span id="profitChange" style="font-size: 14px; margin-left: 10px;"></span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <label>Units Sold:</label>
+                        <div style="font-size: 24px; font-weight: bold;">
+                            <span id="unitsSold">0</span>
+                            <span id="unitsChange" style="font-size: 14px; margin-left: 10px;"></span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <label>Customer Satisfaction:</label>
+                        <div style="font-size: 24px; font-weight: bold;">
+                            <span id="satisfaction">0</span>%
+                            <span id="satisfactionChange" style="font-size: 14px; margin-left: 10px;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Cost Breakdown</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <strong>Variable Costs:</strong>
+                        <div class="form-row">
+                            <label>Materials:</label>
+                            <span>$<span id="materials">0</span></span>
+                        </div>
+                        <div class="form-row">
+                            <label>Labour:</label>
+                            <span>$<span id="labour">0</span></span>
+                        </div>
+                        <div class="form-row">
+                            <label>Overhead:</label>
+                            <span>$<span id="overhead">0</span></span>
+                        </div>
+                    </div>
+                    <div>
+                        <strong>Fixed Costs:</strong>
+                        <div class="form-row">
+                            <label>Staff Salaries:</label>
+                            <span>$<span id="staffCost">25,000</span></span>
+                        </div>
+                        <div class="form-row">
+                            <label>Facility Rent:</label>
+                            <span>$12,000</span>
+                        </div>
+                        <div class="form-row">
+                            <label>Maintenance:</label>
+                            <span>$<span id="maintenanceCost">8,000</span></span>
+                        </div>
+                        <div class="form-row">
+                            <label>Marketing:</label>
+                            <span>$<span id="marketingCost">10,000</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="resultsFeedback" class="decision-help" style="margin-top: 20px;">
+                    <h4>Performance Analysis</h4>
+                    <div id="feedbackContent"></div>
+                </div>
+                
+                <button class="btn btn-success" onclick="nextMonth()">Continue to Next Month</button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div id="summary" class="card hidden">
+            <h2>Performance Summary Report</h2>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <div style="font-size: 48px; font-weight: bold; color: #007bff;" id="overallScore">85</div>
+                <p>Overall Performance Score (out of 100)</p>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3>Key Performance Indicators</h3>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="totalProfitKPI">$0</div>
+                        <div>Total Profit</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="avgRevenueKPI">$0</div>
+                        <div>Average Monthly Revenue</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="totalUnitsKPI">0</div>
+                        <div>Total Units Sold</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="bestMonthKPI">Month 1</div>
+                        <div>Best Performing Month</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3>Monthly Performance Breakdown</h3>
+                <div id="monthlyBreakdown"></div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3>Strategic Analysis</h3>
+                <div id="strategicAnalysis"></div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-success" onclick="exportResults()">Export Results</button>
+                <button class="btn btn-info" onclick="showFeedbackForm()">Provide Feedback</button>
+            </div>
+        </div>
+        
+        <!-- Feedback Form -->
+        <div id="feedbackForm" class="card hidden">
+            <h2>Simulation Feedback & Suggestions</h2>
+            <p style="margin-bottom: 20px;">Your feedback helps us improve this learning tool. Please share your thoughts!</p>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 10px;">How would you rate this simulation?</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <label><input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐ Excellent</label>
+                    <label><input type="radio" name="rating" value="4"> ⭐⭐⭐⭐ Good</label>
+                    <label><input type="radio" name="rating" value="3"> ⭐⭐⭐ Average</label>
+                    <label><input type="radio" name="rating" value="2"> ⭐⭐ Poor</label>
+                    <label><input type="radio" name="rating" value="1"> ⭐ Very Poor</label>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 10px;">What did you like about the simulation?</label>
+                <textarea id="feedbackLikes" style="width: 100%; height: 80px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px;" placeholder="e.g., The real-time feedback was helpful, I enjoyed seeing how decisions impacted profit..."></textarea>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 10px;">What could be improved?</label>
+                <textarea id="feedbackImprovements" style="width: 100%; height: 80px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px;" placeholder="e.g., More market events, clearer explanations, additional decision options..."></textarea>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 10px;">Which concepts were most/least clear?</label>
+                <textarea id="feedbackConcepts" style="width: 100%; height: 80px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px;" placeholder="e.g., Cost-volume-profit relationships were clear, but wage impacts were confusing..."></textarea>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 10px;">Additional suggestions or comments:</label>
+                <textarea id="feedbackAdditional" style="width: 100%; height: 80px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px;" placeholder="Any other thoughts or suggestions..."></textarea>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-success" onclick="submitFeedback()">Submit Feedback</button>
+                <button class="btn" onclick="backToSummary()">Back to Summary</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        var gameState = {
+            playerName: "",
+            tutorialTime: "",
+            currentMonth: 0,
+            isPracticeRound: true,
+            decisions: [],
+            results: [],
+            additionalStaff: 0,
+            sessionId: "ACC_" + Date.now(),
+            startTime: new Date()
+        };
+
+        // Market events
+        var events = [
+            {
+                month: 2, 
+                title: "TechCorp enters the premium market", 
+                details: "TechCorp, a major electronics manufacturer, has launched a competing premium product line. Their aggressive pricing strategy (15% below market average) and established brand reputation are expected to reduce demand for premium products by 15-20%. Consider adjusting your strategy to compete or pivot to other market segments.",
+                effect: "premiumDown"
+            },
+            {
+                month: 3, 
+                title: "Union negotiates industry-wide wage increase", 
+                details: "The Manufacturing Workers Union has successfully negotiated an 8% wage increase across the industry, effective immediately. This will increase your labour costs proportionally. Companies that already pay above-market wages may see improved worker loyalty and productivity, while those paying below market rates may face quality issues.",
+                effect: "labourUp"
+            },
+            {
+                month: 4, 
+                title: "Government stimulus boosts economy segment", 
+                details: "A new government economic stimulus package has put more disposable income in the hands of budget-conscious consumers. Economy segment demand is expected to increase by 25%. This presents an opportunity for companies positioned in the value market, but increased demand may also lead to more competition.",
+                effect: "economyUp"
+            },
+            {
+                month: 5, 
+                title: "Raw material shortage hits the industry", 
+                details: "Global supply chain disruptions have created a shortage of key raw materials. Material costs will increase by 15% this month. Companies with premium maintenance programs may secure better supplier relationships and face only a 10% increase. Consider whether to absorb costs or pass them to customers.",
+                effect: "materialsUp"
+            }
+        ];
+
+        // Market data
+        var marketData = [
+            {premium: "Moderate demand", standard: "Steady demand", economy: "Growing segment"},
+            {premium: "Strong demand", standard: "Steady demand", economy: "Moderate demand"},
+            {premium: "Weakened demand", standard: "Steady demand", economy: "Growing demand"},
+            {premium: "Weak demand", standard: "Steady demand", economy: "Strong demand"},
+            {premium: "Recovering demand", standard: "Declining demand", economy: "Very strong demand"},
+            {premium: "Moderate demand", standard: "Moderate demand", economy: "Strong demand"}
+        ];
+
+        function toggleDecisionHelp() {
+            var helpSection = document.getElementById('decisionHelpSection');
+            helpSection.classList.toggle('hidden');
+        }
+
+        function startGame() {
+            var name = document.getElementById("playerName").value;
+            var tutorial = document.getElementById("tutorialTime").value;
+            
+            if (!name || !tutorial) {
+                alert("Please enter your name and select tutorial time");
+                return;
+            }
+            
+            gameState.playerName = name;
+            gameState.tutorialTime = tutorial;
+            gameState.startTime = new Date();
+            
+            document.getElementById("welcomeScreen").classList.add("hidden");
+            document.getElementById("gameArea").classList.remove("hidden");
+            updateMarketInfo();
+        }
+
+        function updateMarketInfo() {
+            var index = Math.min(gameState.currentMonth, marketData.length - 1);
+            var data = marketData[index];
+            document.getElementById("premiumInfo").textContent = data.premium;
+            document.getElementById("standardInfo").textContent = data.standard;
+            document.getElementById("economyInfo").textContent = data.economy;
+            
+            // Check for market events
+            var eventFound = false;
+            for (var i = 0; i < events.length; i++) {
+                if (events[i].month === gameState.currentMonth && !gameState.isPracticeRound) {
+                    document.getElementById("marketEvent").classList.remove("hidden");
+                    document.getElementById("eventTitle").textContent = events[i].title;
+                    document.getElementById("eventDetails").textContent = events[i].details;
+                    eventFound = true;
+                    break;
+                }
+            }
+            if (!eventFound) {
+                document.getElementById("marketEvent").classList.add("hidden");
+            }
+        }
+
+        function calculateCustomerSatisfaction(price, method, wageAdjustment) {
+            var baseSatisfaction = 70;
+            
+            // Method-price alignment
+            if (method === "premium" && price >= 180 && price <= 220) {
+                baseSatisfaction += 15;
+            } else if (method === "economy" && price >= 140 && price <= 160) {
+                baseSatisfaction += 10;
+            } else if (method === "standard" && price >= 160 && price <= 180) {
+                baseSatisfaction += 12;
+            }
+            
+            // Misalignment penalties
+            if (price >= 180 && method === "economy") {
+                baseSatisfaction -= 40;
+            } else if (price >= 200 && method === "standard") {
+                baseSatisfaction -= 25;
+            } else if (price <= 160 && method === "premium") {
+                baseSatisfaction -= 15;
+            }
+            
+            // Wage impact on satisfaction
+            if (wageAdjustment >= 5) {
+                baseSatisfaction += 5;
+            } else if (wageAdjustment === 10) {
+                baseSatisfaction += 10;
+            } else if (wageAdjustment <= -5) {
+                baseSatisfaction -= 8;
+            } else if (wageAdjustment === -10) {
+                baseSatisfaction -= 15;
+            }
+            
+            return Math.max(0, Math.min(100, baseSatisfaction));
+        }
+
+        function generateFeedback(result, decision) {
+            var feedback = "<ul>";
+            
+            // Profit analysis
+            if (result.profit > 0) {
+                feedback += "<li>✅ <strong>Profitable month!</strong> You generated $" + result.profit.toLocaleString() + " in profit.</li>";
+            } else {
+                feedback += "<li>❌ <strong>Loss incurred.</strong> Consider adjusting prices or reducing costs.</li>";
+            }
+            
+            // Efficiency analysis
+            if (result.efficiency > 90) {
+                feedback += "<li>✅ <strong>Excellent production efficiency</strong> - you sold " + result.efficiency.toFixed(0) + "% of production.</li>";
+            } else if (result.efficiency < 70) {
+                feedback += "<li>⚠️ <strong>Low sales efficiency</strong> - only " + result.efficiency.toFixed(0) + "% of units sold. Consider reducing production or increasing marketing.</li>";
+            }
+            
+            // Customer satisfaction
+            if (result.satisfaction >= 80) {
+                feedback += "<li>✅ <strong>High customer satisfaction</strong> (" + result.satisfaction + "%) - excellent price-quality match!</li>";
+            } else if (result.satisfaction < 60) {
+                feedback += "<li>❌ <strong>Low customer satisfaction</strong> (" + result.satisfaction + "%) - review your price-quality alignment.</li>";
+            }
+            
+            // Margin analysis
+            if (result.margin > 20) {
+                feedback += "<li>✅ <strong>Healthy profit margin</strong> of " + result.margin.toFixed(1) + "%.</li>";
+            } else if (result.margin < 10 && result.margin > 0) {
+                feedback += "<li>⚠️ <strong>Low profit margin</strong> (" + result.margin.toFixed(1) + "%) - vulnerable to cost increases.</li>";
+            }
+            
+            feedback += "</ul>";
+            return feedback;
+        }
+
+        function submitDecision() {
+            var units = parseInt(document.getElementById("units").value) || 0;
+            var price = parseInt(document.getElementById("price").value) || 0;
+            var method = document.getElementById("productionMethod").value;
+            var wageAdjustment = parseInt(document.getElementById("wageAdjustment").value) || 0;
+            var staffing = parseInt(document.getElementById("staffing").value) || 0;
+            var maintenance = document.getElementById("maintenance").value;
+            var marketing = parseInt(document.getElementById("marketing").value) || 0;
+            
+            var varCosts = {standard: 80, premium: 100, economy: 60}[method];
+            
+            // Initialize multipliers
+            var labourMultiplier = 1 + (wageAdjustment / 100);
+            var materialMultiplier = 1;
+            var demandMultiplier = 1;
+            var productionEfficiency = 1;
+            var qualityBonus = 1;
+            
+            // Wage adjustment effects
+            if (wageAdjustment >= 5) {
+                productionEfficiency *= 1.05;
+                qualityBonus *= 1.03;
+            } else if (wageAdjustment === 10) {
+                productionEfficiency *= 1.10;
+                qualityBonus *= 1.05;
+            } else if (wageAdjustment <= -5) {
+                productionEfficiency *= 0.92;
+                qualityBonus *= 0.95;
+            } else if (wageAdjustment === -10) {
+                productionEfficiency *= 0.85;
+                qualityBonus *= 0.90;
+            }
+            
+            // Apply market events
+            for (var e = 0; e < events.length; e++) {
+                if (events[e].month === gameState.currentMonth && !gameState.isPracticeRound) {
+                    switch(events[e].effect) {
+                        case "labourUp":
+                            labourMultiplier *= 1.08;
+                            break;
+                        case "premiumDown":
+                            if (method === "premium") demandMultiplier = 0.82;
+                            break;
+                        case "economyUp":
+                            if (method === "economy") demandMultiplier = 1.25;
+                            break;
+                        case "materialsUp":
+                            materialMultiplier = maintenance === "premium" ? 1.10 : 1.15;
+                            break;
+                    }
+                }
+            }
+            
+            // Maintenance effects
+            if (maintenance === "basic") {
+                productionEfficiency *= Math.random() > 0.1 ? 1 : 0.85;
+            } else if (maintenance === "premium") {
+                qualityBonus *= 1.05;
+            }
+            
+            // Staffing efficiency
+            var staffingEfficiency = 1;
+            var totalStaff = gameState.additionalStaff + staffing;
+            if (totalStaff >= 2) {
+                staffingEfficiency = 0.9;
+            } else if (totalStaff >= 1) {
+                staffingEfficiency = 0.95;
+            }
+            
+            // Calculate variable costs
+            var materials = units * varCosts * 0.4 * materialMultiplier;
+            var labour = units * varCosts * 0.35 * labourMultiplier * staffingEfficiency;
+            var overhead = units * varCosts * 0.25;
+            var totalVariable = materials + labour + overhead;
+            
+            // Calculate fixed costs
+            var baseStaffCost = 25000 + (gameState.additionalStaff * 12000) + (staffing * 12000);
+            var staffSalaries = baseStaffCost * labourMultiplier;
+            var maintenanceCost = {basic: 4000, standard: 8000, premium: 15000}[maintenance];
+            var fixedCosts = staffSalaries + maintenanceCost + 12000 + marketing;
+            
+            // Calculate demand and sales
+            var baseDemand = 800 + (marketing / 350);
+            var effectiveUnitsProduced = Math.floor(units * productionEfficiency);
+            var actualDemand = Math.floor(baseDemand * demandMultiplier * qualityBonus);
+            var unitsSold = Math.min(effectiveUnitsProduced, actualDemand);
+            
+            // Calculate financial results
+            var revenue = unitsSold * price;
+            var totalCosts = totalVariable + fixedCosts;
+            var profit = revenue - totalCosts;
+            
+            // Calculate satisfaction
+            var satisfaction = calculateCustomerSatisfaction(price, method, wageAdjustment);
+            if (maintenance === "premium") {
+                satisfaction = Math.min(100, satisfaction + 8);
+            } else if (maintenance === "basic" && productionEfficiency < 1) {
+                satisfaction = Math.max(0, satisfaction - 15);
+            }
+            
+            // Update display
+            document.getElementById("revenue").textContent = revenue.toLocaleString();
+            document.getElementById("costs").textContent = totalCosts.toLocaleString();
+            document.getElementById("profit").textContent = profit.toLocaleString();
+            document.getElementById("profit").style.color = profit >= 0 ? "#28a745" : "#dc3545";
+            document.getElementById("unitsSold").textContent = unitsSold.toLocaleString();
+            document.getElementById("satisfaction").textContent = satisfaction;
+            
+            // Update cost breakdown
+            document.getElementById("materials").textContent = Math.round(materials).toLocaleString();
+            document.getElementById("labour").textContent = Math.round(labour).toLocaleString();
+            document.getElementById("overhead").textContent = Math.round(overhead).toLocaleString();
+            document.getElementById("staffCost").textContent = Math.round(staffSalaries).toLocaleString();
+            document.getElementById("maintenanceCost").textContent = Math.round(maintenanceCost).toLocaleString();
+            document.getElementById("marketingCost").textContent = Math.round(marketing).toLocaleString();
+            
+            // Store decision and results
+            var decision = {
+                month: gameState.currentMonth,
+                units: units,
+                method: method,
+                price: price,
+                wageAdjustment: wageAdjustment,
+                staffing: staffing,
+                maintenance: maintenance,
+                marketing: marketing
+            };
+            
+            var result = {
+                revenue: revenue,
+                totalCosts: totalCosts,
+                profit: profit,
+                unitsSold: unitsSold,
+                satisfaction: satisfaction,
+                unitsProduced: effectiveUnitsProduced,
+                materials: materials,
+                labour: labour,
+                overhead: overhead,
+                fixedCosts: fixedCosts,
+                margin: revenue > 0 ? ((profit / revenue) * 100) : 0,
+                efficiency: units > 0 ? ((unitsSold / units) * 100) : 0
+            };
+            
+            // Show month-over-month comparison
+            showMonthComparison(result);
+            
+            // Generate feedback
+            document.getElementById("feedbackContent").innerHTML = generateFeedback(result, decision);
+            
+            // Update game state
+            gameState.additionalStaff += staffing;
+            gameState.decisions.push(decision);
+            gameState.results.push(result);
+            
+            // Show results
+            document.getElementById("results").classList.remove("hidden");
+        }
+
+        function showMonthComparison(currentResult) {
+            if (gameState.results.length >= 1 && !gameState.isPracticeRound) {
+                var previousResult = gameState.results[gameState.results.length - 1];
+                
+                var revChange = currentResult.revenue - previousResult.revenue;
+                var costChange = currentResult.totalCosts - previousResult.totalCosts;
+                var profitChange = currentResult.profit - previousResult.profit;
+                var unitsChange = currentResult.unitsSold - previousResult.unitsSold;
+                var satChange = currentResult.satisfaction - previousResult.satisfaction;
+                
+                var revElement = document.getElementById("revenueChange");
+                if (revChange > 0) {
+                    revElement.textContent = "+" + revChange.toLocaleString();
+                    revElement.className = "positive";
+                } else if (revChange < 0) {
+                    revElement.textContent = revChange.toLocaleString();
+                    revElement.className = "negative";
+                } else {
+                    revElement.textContent = "No change";
+                    revElement.className = "neutral";
+                }
+                
+                var costElement = document.getElementById("costsChange");
+                if (costChange > 0) {
+                    costElement.textContent = "+" + costChange.toLocaleString();
+                    costElement.className = "negative";
+                } else if (costChange < 0) {
+                    costElement.textContent = costChange.toLocaleString();
+                    costElement.className = "positive";
+                } else {
+                    costElement.textContent = "No change";
+                    costElement.className = "neutral";
+                }
+                
+                var profitElement = document.getElementById("profitChange");
+                if (profitChange > 0) {
+                    profitElement.textContent = "+" + profitChange.toLocaleString();
+                    profitElement.className = "positive";
+                } else if (profitChange < 0) {
+                    profitElement.textContent = profitChange.toLocaleString();
+                    profitElement.className = "negative";
+                } else {
+                    profitElement.textContent = "No change";
+                    profitElement.className = "neutral";
+                }
+                
+                var unitsElement = document.getElementById("unitsChange");
+                if (unitsChange > 0) {
+                    unitsElement.textContent = "+" + unitsChange;
+                    unitsElement.className = "positive";
+                } else if (unitsChange < 0) {
+                    unitsElement.textContent = unitsChange;
+                    unitsElement.className = "negative";
+                } else {
+                    unitsElement.textContent = "No change";
+                    unitsElement.className = "neutral";
+                }
+                
+                var satElement = document.getElementById("satisfactionChange");
+                if (satChange > 0) {
+                    satElement.textContent = "+" + satChange + "%";
+                    satElement.className = "positive";
+                } else if (satChange < 0) {
+                    satElement.textContent = satChange + "%";
+                    satElement.className = "negative";
+                } else {
+                    satElement.textContent = "No change";
+                    satElement.className = "neutral";
+                }
+            } else {
+                document.getElementById("revenueChange").textContent = "";
+                document.getElementById("costsChange").textContent = "";
+                document.getElementById("profitChange").textContent = "";
+                document.getElementById("unitsChange").textContent = "";
+                document.getElementById("satisfactionChange").textContent = "";
+            }
+        }
+
+        function nextMonth() {
+            gameState.currentMonth++;
+            
+            if (gameState.currentMonth > 6) {
+                showSummary();
+                return;
+            }
+            
+            document.getElementById("monthTitle").textContent = "Month " + gameState.currentMonth;
+            document.getElementById("results").classList.add("hidden");
+            
+            updateMarketInfo();
+            
+            gameState.isPracticeRound = false;
+            document.getElementById("staffing").selectedIndex = 0;
+        }
+
+        function showSummary() {
+            document.getElementById("gameArea").classList.add("hidden");
+            document.getElementById("summary").classList.remove("hidden");
+            
+            calculatePerformanceMetrics();
+            generateMonthlyBreakdown();
+            analyzeStrategy();
+        }
+
+        function calculatePerformanceMetrics() {
+            var totalProfit = 0;
+            var totalRevenue = 0;
+            var totalUnits = 0;
+            var bestMonth = {profit: -999999, month: 1};
+            
+            for (var i = 0; i < gameState.results.length; i++) {
+                totalProfit += gameState.results[i].profit;
+                totalRevenue += gameState.results[i].revenue;
+                totalUnits += gameState.results[i].unitsSold;
+                
+                if (gameState.results[i].profit > bestMonth.profit) {
+                    bestMonth.profit = gameState.results[i].profit;
+                    bestMonth.month = i + 1;
+                }
+            }
+            
+            var avgRevenue = totalRevenue / gameState.results.length;
+            var avgMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+            
+            var score = Math.round(Math.min(100, Math.max(0, 
+                (totalProfit / 10000) + (avgMargin * 2) + 30
+            )));
+            
+            document.getElementById("totalProfitKPI").textContent = "$" + totalProfit.toLocaleString();
+            document.getElementById("avgRevenueKPI").textContent = "$" + Math.round(avgRevenue).toLocaleString();
+            document.getElementById("totalUnitsKPI").textContent = totalUnits.toLocaleString();
+            document.getElementById("bestMonthKPI").textContent = "Month " + bestMonth.month;
+            document.getElementById("overallScore").textContent = score;
+            
+            var scoreElement = document.getElementById("overallScore");
+            if (score >= 90) scoreElement.style.color = "#28a745";
+            else if (score >= 80) scoreElement.style.color = "#17a2b8";
+            else if (score >= 70) scoreElement.style.color = "#ffc107";
+            else if (score >= 60) scoreElement.style.color = "#fd7e14";
+            else scoreElement.style.color = "#dc3545";
+        }
+
+        function generateMonthlyBreakdown() {
+            var html = "";
+            html += "<table style='width: 100%; border-collapse: collapse;'>";
+            html += "<tr style='background: #007bff; color: white;'>";
+            html += "<th style='padding: 10px; border: 1px solid #ddd;'>Month</th>";
+            html += "<th style='padding: 10px; border: 1px solid #ddd;'>Units</th>";
+            html += "<th style='padding: 10px; border: 1px solid #ddd;'>Method</th>";
+            html += "<th style='padding: 10px; border: 1px solid #ddd;'>Price</th>";
+            html += "<th style='padding: 10px; border: 1px solid #ddd;'>Revenue</th>";
+            html += "<th style='padding: 10px; border: 1px solid #ddd;'>Profit</th>";
+            html += "</tr>";
+            
+            for (var i = 0; i < gameState.decisions.length; i++) {
+                html += "<tr>";
+                html += "<td style='padding: 8px; border: 1px solid #ddd;'>" + gameState.decisions[i].month + "</td>";
+                html += "<td style='padding: 8px; border: 1px solid #ddd;'>" + gameState.decisions[i].units + "</td>";
+                html += "<td style='padding: 8px; border: 1px solid #ddd;'>" + gameState.decisions[i].method + "</td>";
+                html += "<td style='padding: 8px; border: 1px solid #ddd;'>$" + gameState.decisions[i].price + "</td>";
+                html += "<td style='padding: 8px; border: 1px solid #ddd;'>$" + gameState.results[i].revenue.toLocaleString() + "</td>";
+                html += "<td style='padding: 8px; border: 1px solid #ddd;'>$" + gameState.results[i].profit.toLocaleString() + "</td>";
+                html += "</tr>";
+            }
+            html += "</table>";
+            
+            document.getElementById("monthlyBreakdown").innerHTML = html;
+        }
+
+        function analyzeStrategy() {
+            var methodCounts = {};
+            var totalMarketing = 0;
+            var wageStrategy = [];
+            
+            for (var i = 0; i < gameState.decisions.length; i++) {
+                var d = gameState.decisions[i];
+                methodCounts[d.method] = (methodCounts[d.method] || 0) + 1;
+                totalMarketing += d.marketing;
+                wageStrategy.push(d.wageAdjustment);
+            }
+            
+            var dominantMethod = "standard";
+            var maxCount = 0;
+            for (var method in methodCounts) {
+                if (methodCounts[method] > maxCount) {
+                    maxCount = methodCounts[method];
+                    dominantMethod = method;
+                }
+            }
+            
+            var avgMarketing = totalMarketing / gameState.decisions.length;
+            var avgWageAdjustment = wageStrategy.reduce((a, b) => a + b, 0) / wageStrategy.length;
+            
+            var prices = [];
+            for (var i = 0; i < gameState.decisions.length; i++) {
+                prices.push(gameState.decisions[i].price);
+            }
+            var avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
+            
+            var maxPrice = Math.max.apply(Math, prices);
+            var minPrice = Math.min.apply(Math, prices);
+            var priceVariability = maxPrice - minPrice;
+            
+            var html = "";
+            html += "<h4>Production Strategy</h4>";
+            html += "<p>Your dominant production method was <strong>" + dominantMethod + "</strong>, used in " + 
+                    methodCounts[dominantMethod] + " out of " + gameState.decisions.length + " months.</p>";
+            
+            html += "<h4>Pricing Strategy</h4>";
+            html += "<p>Average selling price: <strong>$" + avgPrice.toFixed(0) + "</strong><br>";
+            html += "Price variability: <strong>$" + priceVariability + "</strong> ";
+            
+            if (priceVariability < 20) {
+                html += "(Consistent pricing strategy)";
+            } else if (priceVariability < 50) {
+                html += "(Moderate price adjustments)";
+            } else {
+                html += "(Highly variable pricing)";
+            }
+            html += "</p>";
+            
+            html += "<h4>Cost Management</h4>";
+            html += "<p>Average marketing spend: <strong>$" + avgMarketing.toLocaleString() + "</strong><br>";
+            
+            if (avgWageAdjustment > 0) {
+                html += "Wage strategy: <strong>Premium wages</strong> (average +" + avgWageAdjustment.toFixed(1) + "%)";
+            } else if (avgWageAdjustment < 0) {
+                html += "Wage strategy: <strong>Cost-cutting</strong> (average " + avgWageAdjustment.toFixed(1) + "%)";
+            } else {
+                html += "Wage strategy: <strong>Market rate</strong>";
+            }
+            html += "</p>";
+            
+            // Strategic insights
+            html += "<h4>Strategic Insights</h4>";
+            html += "<ul>";
+            
+            if (dominantMethod === "premium" && avgPrice > 200) {
+                html += "<li>You pursued a <strong>premium strategy</strong> with high-quality products and premium pricing.</li>";
+            } else if (dominantMethod === "economy" && avgPrice < 160) {
+                html += "<li>You focused on <strong>cost leadership</strong> with economy products and competitive pricing.</li>";
+            } else {
+                html += "<li>You followed a <strong>balanced approach</strong> between quality and cost.</li>";
+            }
+            
+            if (avgWageAdjustment > 5 && avgMarketing > 15000) {
+                html += "<li>Your <strong>high investment strategy</strong> in both wages and marketing suggests a focus on quality and growth.</li>";
+            } else if (avgWageAdjustment < -5 && avgMarketing < 10000) {
+                html += "<li>Your <strong>lean operations approach</strong> minimized costs but may have impacted quality and demand.</li>";
+            }
+            
+            html += "</ul>";
+            
+            document.getElementById("strategicAnalysis").innerHTML = html;
+        }
+
+        function exportResults() {
+            var data = {
+                studentInfo: {
+                    name: gameState.playerName,
+                    tutorialTime: gameState.tutorialTime,
+                    sessionId: gameState.sessionId,
+                    startTime: gameState.startTime,
+                    completionTime: new Date()
+                },
+                decisions: gameState.decisions,
+                results: gameState.results
+            };
+            
+            var dataStr = JSON.stringify(data, null, 2);
+            var blob = new Blob([dataStr], {type: "application/json"});
+            var url = URL.createObjectURL(blob);
+            
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "ACC2200_" + gameState.playerName.replace(/\s+/g, "_") + "_" + gameState.sessionId + ".json";
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function showFeedbackForm() {
+            document.getElementById("summary").classList.add("hidden");
+            document.getElementById("feedbackForm").classList.remove("hidden");
+        }
+
+        function backToSummary() {
+            document.getElementById("feedbackForm").classList.add("hidden");
+            document.getElementById("summary").classList.remove("hidden");
+        }
+
+        function submitFeedback() {
+            // Get feedback values
+            var rating = document.querySelector('input[name="rating"]:checked');
+            var likes = document.getElementById("feedbackLikes").value;
+            var improvements = document.getElementById("feedbackImprovements").value;
+            var concepts = document.getElementById("feedbackConcepts").value;
+            var additional = document.getElementById("feedbackAdditional").value;
+            
+            if (!rating) {
+                alert("Please select a rating before submitting.");
+                return;
+            }
+            
+            // Create feedback object
+            var feedbackData = {
+                studentInfo: {
+                    name: gameState.playerName,
+                    tutorial: gameState.tutorialTime,
+                    completionTime: new Date().toISOString()
+                },
+                feedback: {
+                    rating: parseInt(rating.value),
+                    likes: likes,
+                    improvements: improvements,
+                    conceptClarity: concepts,
+                    additionalComments: additional
+                },
+                performance: {
+                    finalScore: parseInt(document.getElementById("overallScore").textContent),
+                    totalProfit: gameState.results.reduce((sum, r) => sum + r.profit, 0)
+                }
+            };
+            
+            // Create downloadable feedback file
+            var feedbackStr = JSON.stringify(feedbackData, null, 2);
+            var blob = new Blob([feedbackStr], {type: "application/json"});
+            var url = URL.createObjectURL(blob);
+            
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "ACC2200_Feedback_" + gameState.playerName.replace(/\s+/g, "_") + "_" + Date.now() + ".json";
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            
+            // Show confirmation
+            alert("Thank you for your feedback! Your feedback file has been downloaded. Please submit it along with your results to your instructor.");
+            
+            // Return to summary
+            backToSummary();
+        }
+
+        function resetSimulation() {
+            if (confirm("Are you sure you want to start a new simulation? This will reset all progress.")) {
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
